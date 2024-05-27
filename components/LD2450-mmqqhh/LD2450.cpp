@@ -279,8 +279,7 @@ namespace esphome::ld2450
 void delayed_update(int target_count) 
 {
     std::this_thread::sleep_for(std::chrono::seconds(2));
-     allTargetCount=target_count+allTargetCount;
-     target_count=allTargetCount;
+     allTargetCount+=target_count;
 }
     void LD2450::process_message(uint8_t *msg, int len)
     {
@@ -321,7 +320,7 @@ void delayed_update(int target_count)
             target_count += target->is_present();
         }
         is_occupied_ = target_count > 0;
-        std::thread(delay_thread, delayed_update, std::ref(allTargetCount), target_count).detach();
+       std::thread(delay_thread, target_count).detach();
 
 #ifdef USE_BINARY_SENSOR
         if (occupancy_binary_sensor_ != nullptr && occupancy_binary_sensor_->state != is_occupied_)
